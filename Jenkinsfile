@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        timestamps()
-    }
-
     environment {
         APP_NAME = 'nginx-demo'
         APP_NAMESPACE = 'virenaz-dev'
