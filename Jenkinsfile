@@ -18,6 +18,26 @@ pipeline {
             }
         }
 
+        stage('Check OpenShift Access') {
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Running as:"
+                    whoami
+
+                    echo "Checking OpenShift CLI:"
+                    command -v oc
+
+                    echo "Checking OpenShift identity:"
+                    oc whoami
+
+                    echo "Checking target project:"
+                    oc project virenaz-dev
+                '''
+            }
+        }
+
         stage('Validate Files') {
             steps {
                 sh '''
