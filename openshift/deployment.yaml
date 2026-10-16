@@ -20,10 +20,21 @@ spec:
           ports:
             - name: http
               containerPort: 80
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              sed -i 's|/var/run/nginx.pid|/tmp/nginx.pid|' /etc/nginx/nginx.conf
+              printf '\nclient_body_temp_path /tmp/client_temp;\nproxy_temp_path /tmp/proxy_temp;\nfastcgi_temp_path /tmp/fastcgi_temp;\nuwsgi_temp_path /tmp/uwsgi_temp;\nscgi_temp_path /tmp/scgi_temp;\n' > /tmp/nginx-temp-paths.conf
+              sed -i '/http {/a\    include /tmp/nginx-temp-paths.conf;' /etc/nginx/nginx.conf
+              exec nginx -g 'daemon off;'
           volumeMounts:
             - name: website-content
               mountPath: /usr/share/nginx/html
               readOnly: true
+            - name: nginx-temp
+              mountPath: /tmp
       volumes:
         - name: website-content
           configMap:
